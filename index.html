@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff7fb">
+<title>法務3級</title>
+<style>
+:root{
+  --ink:#302a31;
+  --muted:#807580;
+  --pink:#f3a4bb;
+  --pink2:#ea86a6;
+  --lav:#eee9ff;
+  --cream:#fff7e9;
+  --line:#eadfe5;
+  --ok:#48a866;
+  --okbg:#eef9f1;
+  --ng:#dc5a62;
+  --ngbg:#fff0f1;
+  --shadow:0 10px 28px rgba(85,58,75,.10);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#fffafd}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  background:
+    radial-gradient(circle at 0 0,#ffe8f0 0,transparent 30%),
+    radial-gradient(circle at 100% 0,#eee8ff 0,transparent 27%),
+    linear-gradient(#fffafd,#fff);
+}
+button,textarea,select,input{font:inherit}
+button{touch-action:manipulation}
+.app{width:min(94%,820px);margin:0 auto;padding:14px 0 48px}
+.hero{text-align:center;padding:10px 4px 14px}
+.hero h1{margin:0;font-size:28px}
+.hero p{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+.tabs{
+  position:sticky;top:8px;z-index:20;
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;
+  padding:6px;background:rgba(255,255,255,.96);
+  border:1px solid var(--line);border-radius:17px;
+  box-shadow:var(--shadow);
+}
+.tab{
+  border:0;border-radius:12px;padding:12px 8px;
+  background:transparent;color:#756b77;font-weight:900
+}
+.tab.active{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff}
+
+.panel{display:none;margin-top:16px}
+.panel.active{display:block}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--shadow);padding:19px;margin-bottom:14px
+}
+h2{margin:0 0 5px;font-size:20px}
+.note{margin:0 0 16px;color:var(--muted);font-size:13px;line-height:1.6}
+label{display:block;font-weight:800;font-size:14px;margin:14px 0 7px}
+textarea,select{
+  width:100%;border:1.5px solid var(--line);border-radius:13px;
+  padding:12px 13px;background:#fff;color:var(--ink);outline:none;
+}
+textarea{min-height:88px;resize:vertical;line-height:1.55}
+textarea:focus,select:focus{border-color:#eca1b7;box-shadow:0 0 0 3px rgba(243,164,187,.14)}
+
+.question-types{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qtype{position:relative}
+.qtype input{position:absolute;opacity:0;pointer-events:none}
+.qtype label{
+  margin:0;padding:12px;border:1.5px solid var(--line);
+  border-radius:13px;background:#fff;text-align:center;cursor:pointer
+}
+.qtype input:checked + label{
+  border-color:#ee9fb7;background:#fff2f6;color:#c45c7e;
+  box-shadow:0 0 0 3px rgba(243,164,187,.12)
+}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice-editor{
+  display:grid;grid-template-columns:44px 1fr 38px;
+  gap:8px;align-items:center;margin-bottom:9px
+}
+.badge{
+  width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#fff0f5;border:1px solid #f5cedb;
+  color:#d66d8e;font-weight:900
+}
+.iconbtn{
+  border:0;border-radius:10px;padding:10px 0;
+  background:#f7f2f5;color:#877984;font-weight:900
+}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:900}
+.primary{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff}
+.soft{background:#f6f1f5;color:#675e68}
+.cream{background:var(--cream);color:#8b6942}
+.danger{background:#fff0f1;color:#bd4e55}
+.full{width:100%}
+
+.saved-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.count{background:#f8eef3;color:#a45e78;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:900}
+.saved-list{display:grid;gap:9px;margin-top:11px}
+.saved-item{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.saved-title{font-size:14px;font-weight:800;line-height:1.5}
+.meta{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:8px;color:var(--muted);font-size:12px}
+.tag{display:inline-block;background:var(--lav);padding:4px 8px;border-radius:999px;color:#6e5a98;font-weight:800}
+.mini{display:flex;gap:6px}
+.mini button{border:0;border-radius:9px;padding:6px 8px;background:#f5f1f4;color:#655c66;font-size:12px;font-weight:800}
+
+.filterbar{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:end;margin-bottom:12px}
+.quizbar{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.progress-bg{height:10px;background:#f0e7ec;border-radius:999px;overflow:hidden;margin:12px 0 18px}
+.progress{height:100%;background:linear-gradient(90deg,var(--pink),#cfa6f3);width:0;transition:.25s}
+.qnum{color:var(--muted);font-size:13px}
+.question{font-size:21px;font-weight:900;line-height:1.6;white-space:pre-wrap;margin:8px 0 18px}
+.quiz-choice{
+  width:100%;text-align:left;border:1.5px solid var(--line);
+  background:#fff;color:var(--ink);border-radius:15px;
+  padding:14px;line-height:1.55;margin-bottom:9px
+}
+.quiz-choice.correct{border-color:#7bc68f;background:var(--okbg)}
+.quiz-choice.wrong{border-color:#eb888e;background:var(--ngbg)}
+.quiz-choice:disabled{opacity:1}
+.feedback{display:none;margin-top:16px;border-radius:16px;padding:16px}
+.feedback.ok{display:block;background:var(--okbg);border:1px solid #bfe3c8}
+.feedback.ng{display:block;background:var(--ngbg);border:1px solid #f0c2c5}
+.feedback-title{font-size:23px;font-weight:900;margin-bottom:8px}
+.explain{white-space:pre-wrap;line-height:1.65}
+.hidden{display:none!important}
+.center{text-align:center}
+.scorebig{font-size:46px;font-weight:900;color:#d96e93;margin:8px 0}
+.empty{padding:28px 8px;text-align:center;color:var(--muted);line-height:1.7}
+
+@media(max-width:620px){
+  .row,.filterbar,.question-types{grid-template-columns:1fr}
+  .card{padding:16px}
+  .question{font-size:19px}
+  .hero h1{font-size:25px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <h1>法務3級</h1>
+    <p>過去問の選択肢をそのまま登録して、繰り返し解けます。</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-panel="create">問題を作る</button>
+    <button class="tab" data-panel="solve">問題を解く</button>
+  </div>
+
+  <section id="create" class="panel active">
+    <div class="card">
+      <h2>問題作成</h2>
+      <p class="note">問題タイプを選び、選択肢・正解・解説を登録してください。</p>
+
+      <label>問題文</label>
+      <div class="question-types">
+        <div class="qtype">
+          <input type="radio" name="qtype" id="typeCorrect" value="correct" checked>
+          <label for="typeCorrect">正しいものは次のうちどれですか。</label>
+        </div>
+        <div class="qtype">
+          <input type="radio" name="qtype" id="typeWrong" value="wrong">
+          <label for="typeWrong">誤ったものは次のうちどれですか。</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="tag">分野</label>
+          <select id="tag">
+            <option>預金</option>
+            <option>融資</option>
+            <option>為替</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div>
+          <label for="answer">正解</label>
+          <select id="answer"></select>
+        </div>
+      </div>
+
+      <label>選択肢</label>
+      <div id="choiceEditors"></div>
+      <button id="addChoice" class="btn cream" type="button">＋ 選択肢を追加</button>
+
+      <label for="explanation">解説</label>
+      <textarea id="explanation" placeholder="解説や暗記ポイントを入力"></textarea>
+
+      <div class="actions">
+        <button id="saveQuestion" class="btn primary" type="button">問題を登録</button>
+        <button id="resetForm" class="btn soft" type="button">入力をクリア</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="saved-head">
+        <h2>登録済みの問題</h2>
+        <span id="count" class="count">0問</span>
+      </div>
+      <div id="savedList" class="saved-list"></div>
+      <button id="clearAll" class="btn danger full" type="button" style="margin-top:12px">すべて削除</button>
+    </div>
+  </section>
+
+  <section id="solve" class="panel">
+    <div class="card">
+      <div class="filterbar">
+        <div>
+          <label for="filterTag" style="margin-top:0">出題分野</label>
+          <select id="filterTag">
+            <option value="ALL">すべて</option>
+            <option>預金</option>
+            <option>融資</option>
+            <option>為替</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <button id="startNormal" class="btn primary" type="button">通常スタート</button>
+        <button id="startWrong" class="btn soft" type="button">間違えた問題だけ</button>
+      </div>
+
+      <div id="quizEmpty" class="empty">問題を登録すると、ここで解けます。</div>
+
+      <div id="quizArea" class="hidden">
+        <div class="quizbar">
+          <span id="scoreMini">0 / 0 正解</span>
+          <button id="shuffleNow" class="btn soft" type="button" style="padding:8px 10px">🔀 シャッフル</button>
+        </div>
+        <div class="progress-bg"><div id="progress" class="progress"></div></div>
+        <div id="qNum" class="qnum"></div>
+        <div id="quizQ" class="question"></div>
+        <div id="quizChoices"></div>
+        <div id="feedback" class="feedback">
+          <div id="feedbackTitle" class="feedback-title"></div>
+          <div id="feedbackText" class="explain"></div>
+        </div>
+        <button id="next" class="btn primary full hidden" type="button" style="margin-top:14px">次の問題へ</button>
+      </div>
+
+      <div id="finish" class="hidden center">
+        <div style="font-size:18px;font-weight:900">おつかれさまでした</div>
+        <div id="scoreBig" class="scorebig"></div>
+        <div id="rate"></div>
+        <div class="actions" style="justify-content:center">
+          <button id="again" class="btn primary" type="button">もう一度解く</button>
+          <button id="retryWrong" class="btn soft" type="button">今回の間違いだけ</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "houmu3_quiz_site_v1";
+  var items = [];
+  var editingId = null;
+  var quizOrder = [];
+  var currentIndex = 0;
+  var correctCount = 0;
+  var currentWrongIds = [];
+  var quizMode = "normal";
+
+  function byId(id){ return document.getElementById(id); }
+
+  function loadItems(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      items = raw ? JSON.parse(raw) : [];
+      if(!Array.isArray(items)) items = [];
+    }catch(e){
+      items = [];
+    }
+  }
+
+  function saveItems(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    renderSavedList();
+  }
+
+  function makeId(){
+    return "q_" + Date.now() + "_" + Math.floor(Math.random()*1000000);
+  }
+
+  function circledNumber(n){
+    var nums = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳"];
+    return nums[n-1] || (n + ".");
+  }
+
+  function escapeHtml(text){
+    return String(text).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function currentType(){
+    return byId("typeWrong").checked ? "wrong" : "correct";
+  }
+
+  function questionText(type){
+    return type === "wrong"
+      ? "誤ったものは次のうちどれですか。"
+      : "正しいものは次のうちどれですか。";
+  }
+
+  function addChoice(value){
+    if(typeof value !== "string") value = "";
+
+    var container = byId("choiceEditors");
+    var index = container.children.length + 1;
+
+    var row = document.createElement("div");
+    row.className = "choice-editor";
+
+    var badge = document.createElement("div");
+    badge.className = "badge";
+    badge.textContent = circledNumber(index);
+
+    var textarea = document.createElement("textarea");
+    textarea.className = "choiceInput";
+    textarea.rows = 2;
+    textarea.placeholder = "選択肢" + index;
+    textarea.value = value;
+
+    var removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "iconbtn";
+    removeBtn.textContent = "×";
+
+    removeBtn.onclick = function(){
+      if(container.querySelectorAll(".choice-editor").length <= 2){
+        alert("選択肢は2個以上必要です。");
+        return;
+      }
+      container.removeChild(row);
+      renumberChoices();
+    };
+
+    row.appendChild(badge);
+    row.appendChild(textarea);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+
+    updateAnswerOptions();
+  }
+
+  function renumberChoices(){
+    var rows = document.querySelectorAll(".choice-editor");
+    var i;
+    for(i=0;i<rows.length;i++){
+      rows[i].querySelector(".badge").textContent = circledNumber(i+1);
+      rows[i].querySelector(".choiceInput").placeholder = "選択肢" + (i+1);
+    }
+    updateAnswerOptions();
+  }
+
+  function updateAnswerOptions(selectedValue){
+    var select = byId("answer");
+    var oldValue = (typeof selectedValue === "number" || typeof selectedValue === "string")
+      ? String(selectedValue)
+      : select.value;
+
+    var count = document.querySelectorAll(".choice-editor").length;
+    select.innerHTML = "";
+
+    var i, option;
+    for(i=0;i<count;i++){
+      option = document.createElement("option");
+      option.value = String(i);
+      option.textContent = circledNumber(i+1);
+      select.appendChild(option);
+    }
+
+    if(oldValue !== "" && Number(oldValue) < count){
+      select.value = oldValue;
+    }
+  }
+
+  function resetForm(){
+    byId("typeCorrect").checked = true;
+    byId("tag").value = "預金";
+    byId("explanation").value = "";
+    byId("choiceEditors").innerHTML = "";
+    editingId = null;
+    byId("saveQuestion").textContent = "問題を登録";
+
+    addChoice("");
+    addChoice("");
+    updateAnswerOptions(0);
+  }
+
+  function collectChoices(){
+    var inputs = document.querySelectorAll(".choiceInput");
+    var out = [];
+    var i;
+    for(i=0;i<inputs.length;i++){
+      out.push(inputs[i].value.trim());
+    }
+    return out;
+  }
+
+  function saveQuestion(){
+    var choices = collectChoices();
+    var i;
+
+    if(choices.length < 2){
+      alert("選択肢は2個以上必要です。");
+      return;
+    }
+
+    for(i=0;i<choices.length;i++){
+      if(!choices[i]){
+        alert("すべての選択肢を入力してください。");
+        return;
+      }
+    }
+
+    var type = currentType();
+    var data = {
+      id: editingId || makeId(),
+      type: type,
+      q: questionText(type),
+      tag: byId("tag").value,
+      answer: Number(byId("answer").value),
+      explanation: byId("explanation").value.trim(),
+      choices: choices,
+      wasWrong: false
+    };
+
+    if(editingId){
+      var oldIndex = -1;
+      for(i=0;i<items.length;i++){
+        if(items[i].id === editingId){ oldIndex = i; break; }
+      }
+      if(oldIndex >= 0){
+        data.wasWrong = !!items[oldIndex].wasWrong;
+        items[oldIndex] = data;
+      }
+    }else{
+      items.push(data);
+    }
+
+    saveItems();
+    resetForm();
+    alert(editingId ? "問題を更新しました。" : "問題を登録しました。");
+  }
+
+  function renderSavedList(){
+    var list = byId("savedList");
+    byId("count").textContent = items.length + "問";
+    list.innerHTML = "";
+
+    if(items.length === 0){
+      list.innerHTML = '<div class="empty" style="padding:15px 0">まだ登録はありません。</div>';
+      return;
+    }
+
+    var i;
+    for(i=0;i<items.length;i++){
+      (function(item, number){
+        var wrap = document.createElement("div");
+        wrap.className = "saved-item";
+        wrap.innerHTML =
+          '<div class="saved-title">Q'+ number +'. '+ escapeHtml(item.q) +'</div>' +
+          '<div class="meta">' +
+            '<span><span class="tag">'+ escapeHtml(item.tag) +'</span> 正解 '+ circledNumber(item.answer+1) +'</span>' +
+            '<span class="mini"><button class="editBtn" type="button">編集</button><button class="deleteBtn" type="button">削除</button></span>' +
+          '</div>';
+
+        wrap.querySelector(".editBtn").onclick = function(){ editQuestion(item.id); };
+        wrap.querySelector(".deleteBtn").onclick = function(){ deleteQuestion(item.id); };
+        list.appendChild(wrap);
+      })(items[i], i+1);
+    }
+  }
+
+  function editQuestion(id){
+    var item = null, i;
+    for(i=0;i<items.length;i++){
+      if(items[i].id === id){ item = items[i]; break; }
+    }
+    if(!item) return;
+
+    editingId = id;
+    if(item.type === "wrong") byId("typeWrong").checked = true;
+    else byId("typeCorrect").checked = true;
+
+    byId("tag").value = item.tag;
+    byId("explanation").value = item.explanation || "";
+    byId("choiceEditors").innerHTML = "";
+
+    for(i=0;i<item.choices.length;i++) addChoice(item.choices[i]);
+    updateAnswerOptions(item.answer);
+
+    byId("saveQuestion").textContent = "問題を更新";
+    switchPanel("create");
+    window.scrollTo(0,0);
+  }
+
+  function deleteQuestion(id){
+    if(!confirm("この問題を削除しますか？")) return;
+    var next = [], i;
+    for(i=0;i<items.length;i++){
+      if(items[i].id !== id) next.push(items[i]);
+    }
+    items = next;
+    saveItems();
+  }
+
+  function clearAll(){
+    if(items.length === 0) return;
+    if(!confirm("登録した問題をすべて削除しますか？")) return;
+    items = [];
+    localStorage.removeItem(STORAGE_KEY);
+    renderSavedList();
+  }
+
+  function switchPanel(id){
+    var panels = document.querySelectorAll(".panel");
+    var tabs = document.querySelectorAll(".tab");
+    var i;
+
+    for(i=0;i<panels.length;i++) panels[i].classList.remove("active");
+    for(i=0;i<tabs.length;i++){
+      if(tabs[i].getAttribute("data-panel") === id) tabs[i].classList.add("active");
+      else tabs[i].classList.remove("active");
+    }
+    byId(id).classList.add("active");
+  }
+
+  function shuffleArray(arr){
+    var a = arr.slice();
+    var i, j, t;
+    for(i=a.length-1;i>0;i--){
+      j = Math.floor(Math.random()*(i+1));
+      t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function getFilteredIds(onlyWrong){
+    var tag = byId("filterTag").value;
+    var ids = [];
+    var i, item;
+    for(i=0;i<items.length;i++){
+      item = items[i];
+      if(tag !== "ALL" && item.tag !== tag) continue;
+      if(onlyWrong && !item.wasWrong) continue;
+      ids.push(item.id);
+    }
+    return ids;
+  }
+
+  function startQuiz(mode){
+    quizMode = mode;
+    var ids = getFilteredIds(mode === "wrong");
+
+    if(ids.length === 0){
+      byId("quizEmpty").classList.remove("hidden");
+      byId("quizEmpty").textContent = mode === "wrong"
+        ? "この条件の間違い問題はありません。"
+        : "この条件の問題はありません。";
+      byId("quizArea").classList.add("hidden");
+      byId("finish").classList.add("hidden");
+      return;
+    }
+
+    quizOrder = shuffleArray(ids);
+    currentIndex = 0;
+    correctCount = 0;
+    currentWrongIds = [];
+
+    byId("quizEmpty").classList.add("hidden");
+    byId("finish").classList.add("hidden");
+    byId("quizArea").classList.remove("hidden");
+    renderQuestion();
+  }
+
+  function getItemById(id){
+    var i;
+    for(i=0;i<items.length;i++){
+      if(items[i].id === id) return items[i];
+    }
+    return null;
+  }
+
+  function renderQuestion(){
+    var item = getItemById(quizOrder[currentIndex]);
+    if(!item) return;
+
+    byId("qNum").textContent = "第 " + (currentIndex+1) + " 問 / 全 " + quizOrder.length + " 問 ・ " + item.tag;
+    byId("quizQ").textContent = item.q;
+    byId("scoreMini").textContent = correctCount + " / " + currentIndex + " 正解";
+    byId("progress").style.width = ((currentIndex/quizOrder.length)*100) + "%";
+
+    var wrap = byId("quizChoices");
+    wrap.innerHTML = "";
+
+    var i;
+    for(i=0;i<item.choices.length;i++){
+      (function(choiceIndex){
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "quiz-choice";
+        b.textContent = circledNumber(choiceIndex+1) + " " + item.choices[choiceIndex];
+        b.onclick = function(){ checkAnswer(choiceIndex); };
+        wrap.appendChild(b);
+      })(i);
+    }
+
+    byId("feedback").className = "feedback";
+    byId("next").classList.add("hidden");
+  }
+
+  function checkAnswer(selected){
+    var item = getItemById(quizOrder[currentIndex]);
+    if(!item) return;
+
+    var buttons = document.querySelectorAll(".quiz-choice");
+    if(buttons.length && buttons[0].disabled) return;
+
+    var i;
+    for(i=0;i<buttons.length;i++) buttons[i].disabled = true;
+
+    var ok = selected === item.answer;
+    if(ok){
+      correctCount++;
+      buttons[selected].classList.add("correct");
+      item.wasWrong = false;
+    }else{
+      buttons[selected].classList.add("wrong");
+      buttons[item.answer].classList.add("correct");
+      item.wasWrong = true;
+      currentWrongIds.push(item.id);
+    }
+
+    saveItems();
+
+    byId("feedback").className = "feedback " + (ok ? "ok" : "ng");
+    byId("feedbackTitle").textContent = ok ? "⭕️ 正解！" : "❌ 不正解";
+
+    var correctLine = "正解：" + circledNumber(item.answer+1) + " " + item.choices[item.answer];
+    byId("feedbackText").textContent = item.explanation
+      ? correctLine + "\n\n" + item.explanation
+      : correctLine;
+
+    byId("scoreMini").textContent = correctCount + " / " + (currentIndex+1) + " 正解";
+    byId("progress").style.width = (((currentIndex+1)/quizOrder.length)*100) + "%";
+    byId("next").classList.remove("hidden");
+  }
+
+  function nextQuestion(){
+    currentIndex++;
+    if(currentIndex >= quizOrder.length) finishQuiz();
+    else renderQuestion();
+  }
+
+  function finishQuiz(){
+    byId("quizArea").classList.add("hidden");
+    byId("finish").classList.remove("hidden");
+    byId("scoreBig").textContent = correctCount + " / " + quizOrder.length;
+    byId("rate").textContent = "正答率 " + Math.round((correctCount/quizOrder.length)*100) + "%";
+  }
+
+  function retryCurrentWrong(){
+    var unique = [], seen = {}, i, id;
+    for(i=0;i<currentWrongIds.length;i++){
+      id = currentWrongIds[i];
+      if(!seen[id]){
+        seen[id] = true;
+        unique.push(id);
+      }
+    }
+
+    if(unique.length === 0){
+      alert("今回の間違いはありません。");
+      return;
+    }
+
+    quizOrder = shuffleArray(unique);
+    currentIndex = 0;
+    correctCount = 0;
+    currentWrongIds = [];
+    byId("finish").classList.add("hidden");
+    byId("quizArea").classList.remove("hidden");
+    renderQuestion();
+  }
+
+  function setup(){
+    loadItems();
+
+    byId("addChoice").onclick = function(){ addChoice(""); };
+    byId("saveQuestion").onclick = saveQuestion;
+    byId("resetForm").onclick = resetForm;
+    byId("clearAll").onclick = clearAll;
+
+    var tabs = document.querySelectorAll(".tab");
+    var i;
+    for(i=0;i<tabs.length;i++){
+      tabs[i].onclick = function(){
+        switchPanel(this.getAttribute("data-panel"));
+      };
+    }
+
+    byId("startNormal").onclick = function(){ startQuiz("normal"); };
+    byId("startWrong").onclick = function(){ startQuiz("wrong"); };
+    byId("shuffleNow").onclick = function(){
+      quizOrder = shuffleArray(quizOrder);
+      currentIndex = 0;
+      correctCount = 0;
+      currentWrongIds = [];
+      renderQuestion();
+    };
+    byId("next").onclick = nextQuestion;
+    byId("again").onclick = function(){ startQuiz(quizMode); };
+    byId("retryWrong").onclick = retryCurrentWrong;
+
+    resetForm();
+    renderSavedList();
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", setup);
+  }else{
+    setup();
+  }
+})();
+</script>
+</body>
+</html>
